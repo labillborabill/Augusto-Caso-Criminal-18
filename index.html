@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101318">
+  <title>Arquivo Confidencial 018 — Caso Augusto</title>
+  <style>
+    :root {
+      --bg: #0b0d10; --panel: #141920; --panel2: #1b222b; --ink: #f0f2f4;
+      --muted: #aab3bd; --red: #ff4057; --amber: #ffc857; --green: #6ee7b7;
+      --line: #303945;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background:
+        radial-gradient(circle at 10% 0%, #32151d 0, transparent 30rem),
+        radial-gradient(circle at 100% 20%, #182c35 0, transparent 28rem), var(--bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .13;
+      background-image: repeating-linear-gradient(0deg, transparent 0 3px, #ffffff 4px);
+      background-size: 100% 5px; z-index: 5;
+    }
+    .wrap { width: min(920px, calc(100% - 28px)); margin: 0 auto; padding: 24px 0 64px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); padding: 10px 0 18px; color: var(--muted); font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; }
+    .status { color: var(--red); border: 1px solid var(--red); padding: 6px 9px; font-weight: 800; transform: rotate(-2deg); }
+    .hero { padding: 46px 0 30px; }
+    .eyebrow { color: var(--red); font-size: .78rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { font-size: clamp(2.4rem, 8vw, 5.7rem); line-height: .95; margin: 13px 0; letter-spacing: -.07em; }
+    h1 span { color: var(--red); }
+    .subtitle { color: var(--muted); max-width: 650px; line-height: 1.7; font-family: system-ui, sans-serif; }
+    .stamp { display: inline-block; margin-top: 12px; color: var(--amber); border: 2px solid var(--amber); padding: 8px 12px; font-weight: 900; letter-spacing: .1em; transform: rotate(-2deg); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .card { border: 1px solid var(--line); background: linear-gradient(145deg, #171d24, #101419); padding: 20px; border-radius: 10px; box-shadow: 0 15px 40px #0003; }
+    .card h2, .card h3 { margin: 0 0 14px; }
+    .section-label { color: var(--muted); text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; margin-bottom: 9px; }
+    .profile { display: flex; gap: 16px; align-items: center; }
+    .mugshot { flex: 0 0 112px; height: 136px; border: 1px dashed #596371; display: grid; place-items: center; text-align: center; color: var(--muted); background: repeating-linear-gradient(135deg, #1b222b 0 10px, #171d24 10px 20px); font-size: .75rem; padding: 8px; }
+    .mugshot strong { display: block; font-size: 2rem; color: var(--red); }
+    .facts { margin: 0; padding: 0; list-style: none; }
+    .facts li { padding: 7px 0; border-bottom: 1px solid #ffffff12; color: var(--muted); font-size: .85rem; }
+    .facts b { color: var(--ink); }
+    .evidence { display: grid; gap: 10px; }
+    .evidence-item { display: flex; gap: 12px; padding: 12px; background: #ffffff05; border: 1px solid #ffffff12; border-radius: 7px; }
+    .num { color: var(--red); font-weight: 900; }
+    .evidence-item p { margin: 4px 0 0; color: var(--muted); font: .88rem/1.55 system-ui, sans-serif; }
+    .wide { margin-top: 14px; }
+    .btn {
+      border: 1px solid var(--red); background: var(--red); color: #16090c; padding: 13px 17px;
+      font: 900 .85rem ui-monospace, monospace; text-transform: uppercase; letter-spacing: .04em;
+      cursor: pointer; border-radius: 5px; transition: transform .15s, filter .15s;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
+    .btn.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .console { background: #07090b; border: 1px solid #34404a; border-radius: 8px; padding: 16px; min-height: 110px; line-height: 1.65; color: var(--green); overflow-wrap: anywhere; }
+    .console .dim { color: var(--muted); }
+    .meter { height: 8px; background: #2b333d; margin-top: 10px; border-radius: 99px; overflow: hidden; }
+    .meter-fill { width: 0; height: 100%; background: var(--red); transition: width .4s; }
+    .verdict { display: none; margin-top: 20px; border: 2px solid var(--red); padding: clamp(18px, 4vw, 32px); background: #260d12; text-align: center; }
+    .verdict.show { display: block; animation: reveal .5s ease both; }
+    .verdict h2 { color: var(--red); font-size: clamp(1.7rem, 5vw, 3rem); margin: 8px 0 16px; }
+    .verdict .sentence { font-size: clamp(1.2rem, 4vw, 2rem); font-weight: 900; line-height: 1.3; }
+    .verdict p { font: 1rem/1.7 system-ui, sans-serif; color: #f3cbd0; }
+    .footer { margin-top: 30px; color: var(--muted); font-size: .72rem; line-height: 1.7; text-align: center; }
+    .hidden { display: none !important; }
+    .flash { animation: flash .25s ease; }
+    .pop { position: fixed; pointer-events: none; z-index: 10; font-weight: 900; color: var(--red); text-shadow: 0 2px 10px #000; animation: pop .95s ease-out forwards; }
+    @keyframes reveal { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+    @keyframes flash { 50% { border-color: var(--red); box-shadow: 0 0 25px #ff405744; } }
+    @keyframes pop { 0% { opacity: 0; transform: translateY(8px) scale(.7) rotate(-8deg); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-65px) scale(1.15) rotate(8deg); } }
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .hero { padding-top: 32px; }
+      .profile { align-items: flex-start; }
+      .mugshot { flex-basis: 90px; height: 120px; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div>Departamento de Crimes Românticos · DCR</div>
+      <div class="status">CONFIDENCIAL</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Arquivo nº 018-YSM</div>
+      <h1>CASO <span>AUGUSTO</span></h1>
+      <p class="subtitle">Investigação especial sobre um indivíduo que está prestes a completar 18 anos, mas aparentemente perdeu toda a capacidade de agir normalmente quando o assunto é Yasmin.</p>
+      <div class="stamp">OPERAÇÃO: CORAÇÃO RENDIDO</div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="section-label">01 / Identificação do suspeito</div>
+        <div class="profile">
+          <div class="mugshot" id="mugshot"><div><strong>?</strong>FOTO DO SUSPEITO<br>(a inserir)</div></div>
+          <div>
+            <h2 style="margin:0 0 8px">Augusto</h2>
+            <ul class="facts">
+              <li><b>Idade:</b> 18 anos (em atualização)</li>
+              <li><b>Status:</b> emocionalmente comprometido</li>
+              <li><b>Periculosidade:</b> apaixonado demais</li>
+              <li><b>Fraqueza:</b> Yasmin</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="section-label">02 / Acusações preliminares</div>
+        <div class="evidence">
+          <div class="evidence-item"><div class="num">A1</div><div><b>Excesso de pensamentos</b><p>Suspeita de pensar na Yasmin em horários incompatíveis com a produtividade humana.</p></div></div>
+          <div class="evidence-item"><div class="num">A2</div><div><b>Perda de postura</b><p>Relatos de comportamento suspeito sempre que o nome dela é mencionado.</p></div></div>
+          <div class="evidence-item"><div class="num">A3</div><div><b>Romantismo reincidente</b><p>Indícios de que não pretende abandonar o caso tão cedo.</p></div></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card wide" id="investigation">
+      <div class="section-label">03 / Interrogatório interativo</div>
+      <h2>Vamos esclarecer os fatos.</h2>
+      <p class="subtitle" style="margin-top:-5px">Clique para avançar na investigação. Cada clique revela uma nova prova contra o suspeito.</p>
+      <div class="console" id="console" aria-live="polite"><span class="dim">[SISTEMA]</span> Aguardando autorização para iniciar o interrogatório...</div>
+      <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+      <div class="actions">
+        <button class="btn" id="nextBtn">Iniciar investigação</button>
+        <button class="btn secondary" id="randomBtn">Gerar acusação aleatória</button>
+      </div>
+      <p id="progress" class="section-label" style="margin-top:14px">PROVAS ANALISADAS: 0 / 5</p>
+    </section>
+
+    <section class="verdict" id="verdict" aria-live="assertive">
+      <div class="eyebrow">Departamento de Crimes Românticos · Sentença oficial</div>
+      <h2>VEREDITO: CULPADO!</h2>
+      <div class="sentence">PRESO POR AMAR DEMAIS A YASMIN.</div>
+      <p>Após análise minuciosa das evidências, o tribunal conclui que Augusto é culpado de romantismo em primeiro grau, com agravante de não superar a Yasmin.</p>
+      <p><strong>Pena:</strong> prisão perpétua no coração — com direito a visitas, saudade e pensar nela do nada.</p>
+      <hr style="border:0;border-top:1px solid #82313d;margin:22px 0">
+      <div class="sentence" style="font-size:clamp(1.15rem,3vw,1.7rem)">PARABÉNS MALDITO!! MUITOS ANOS DE VIDA DO LADO DA YASMIN</div>
+      <p>Feliz 18 anos cara, muitos anos de vida, que Deus te abençoe muito, e claro, que ele te abençoe com a yasmin</p>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="confettiBtn">Comemorar a sentença</button>
+        <button class="btn secondary" id="restartBtn">Reabrir investigação</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      DOCUMENTO FICTÍCIO PARA FINS DE ZOEIRA ENTRE AMIGOS.<br>
+      Nenhuma lei foi consultada; nenhum policial do amor foi prejudicado.<br>
+      DCR — Departamento de Crimes Românticos · Caso 018-YSM
+    </footer>
+  </main>
+  <script>
+    const evidence = [
+      ["[PROVA 01]", "O suspeito foi flagrado apresentando sinais de sorriso involuntário ao ouvir o nome Yasmin. A perícia considera o comportamento altamente suspeito."],
+      ["[PROVA 02]", "Mensagens analisadas indicam uma concentração anormal de pensamentos românticos. O suspeito nega as acusações, mas ficou sorrindo durante a pergunta."],
+      ["[PROVA 03]", "Testemunhas relatam que o indivíduo pode estar vivendo em um videoclipe romântico que só existe na cabeça dele."],
+      ["[PROVA 04]", "A investigação descobriu que a maior fraqueza do suspeito atende pelo nome de Yasmin. O sistema recomenda: não deixar o cidadão perto de playlists românticas."],
+      ["[PROVA 05]", "Laudo final: o coração do suspeito foi encontrado completamente rendido. Não há evidências de intenção de superar a situação num futuro próximo."]
+    ];
+    const randomAccusations = [
+      "NOVA ACUSAÇÃO: excesso de saudade sem autorização judicial.",
+      "ALERTA: o suspeito ouviu uma música e imediatamente associou à Yasmin.",
+      "RELATÓRIO: 18 anos de idade, 0 anos de experiência em disfarçar a paixão.",
+      "PERÍCIA: o cidadão está mais rendido que réu confessando tudo.",
+      "ATENÇÃO: nível de emocionamento acima do limite permitido pela zoeira."
+    ];
+    let count = 0;
+    const consoleBox = document.getElementById("console");
+    const nextBtn = document.getElementById("nextBtn");
+    const meterFill = document.getElementById("meterFill");
+    const progress = document.getElementById("progress");
+    const verdict = document.getElementById("verdict");
+    const investigation = document.getElementById("investigation");
+
+    function popText(text, x, y) {
+      const el = document.createElement("div");
+      el.className = "pop";
+      el.textContent = text;
+      el.style.left = Math.max(8, Math.min(x, window.innerWidth - 250)) + "px";
+      el.style.top = Math.max(8, Math.min(y, window.innerHeight - 80)) + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }
+    function updateProgress() {
+      meterFill.style.width = (count / evidence.length * 100) + "%";
+      progress.textContent = `PROVAS ANALISADAS: ${count} / ${evidence.length}`;
+    }
+    function nextEvidence() {
+      investigation.classList.remove("flash");
+      void investigation.offsetWidth;
+      investigation.classList.add("flash");
+      if (count === 0) {
+        nextBtn.textContent = "Analisar próxima prova";
+        consoleBox.innerHTML = '<span class="dim">[SISTEMA]</span> Interrogatório iniciado. Carregando arquivos comprometedores...';
+      }
+      if (count < evidence.length) {
+        const [label, text] = evidence[count];
+        consoleBox.innerHTML = `<strong>${label}</strong><br>${text}`;
+        count++;
+        updateProgress();
+        popText(count === evidence.length ? "CULPADO!" : "NOVA PROVA!", window.innerWidth / 2, window.innerHeight / 2);
+      }
+      if (count === evidence.length) {
+        nextBtn.textContent = "Emitir sentença final";
+      } else if (count > evidence.length) {
+        showVerdict();
+      } else {
+        nextBtn.textContent = "Analisar próxima prova";
+      }
+      if (count === evidence.length) {
+        nextBtn.onclick = showVerdict;
+      }
+    }
+    function showVerdict() {
+      verdict.classList.add("show");
+      verdict.scrollIntoView({ behavior: "smooth", block: "center" });
+      nextBtn.textContent = "Sentença emitida";
+      nextBtn.disabled = true;
+      nextBtn.style.opacity = ".5";
+      popText("PRESO POR AMAR!", window.innerWidth / 2 - 80, window.innerHeight / 2);
+    }
+    nextBtn.addEventListener("click", nextEvidence);
+    document.getElementById("randomBtn").addEventListener("click", () => {
+      const text = randomAccusations[Math.floor(Math.random() * randomAccusations.length)];
+      consoleBox.innerHTML = `<strong>[ACUSAÇÃO EXTRA]</strong><br>${text}`;
+      popText("SUSPEITO!", window.innerWidth / 2, window.innerHeight / 2);
+    });
+    document.getElementById("confettiBtn").addEventListener("click", () => {
+      const words = ["PARABÉNS, MALDITO!", "CULPADO!", "YASMIN!", "18 ANOS!", "PRESO POR AMAR!"];
+      for (let i = 0; i < 24; i++) {
+        setTimeout(() => popText(words[Math.floor(Math.random() * words.length)],
+          Math.random() * window.innerWidth, Math.random() * window.innerHeight), i * 45);
+      }
+    });
+    document.getElementById("restartBtn").addEventListener("click", () => {
+      count = 0;
+      verdict.classList.remove("show");
+      nextBtn.disabled = false;
+      nextBtn.style.opacity = "1";
+      nextBtn.textContent = "Iniciar investigação";
+      nextBtn.onclick = null;
+      consoleBox.innerHTML = '<span class="dim">[SISTEMA]</span> Aguardando autorização para iniciar o interrogatório...';
+      updateProgress();
+      investigation.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    // Clique no fundo também dispara uma pequena mensagem; botões continuam funcionando normalmente.
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("button")) return;
+      const phrases = ["SUSPEITO DETECTADO!", "PROVAS EMERGINDO!", "YASMIN NO CASO!", "AMOR EM PRIMEIRO GRAU!"];
+      popText(phrases[Math.floor(Math.random() * phrases.length)], event.clientX, event.clientY);
+    });
+  </script>
+</body>
+</html>
